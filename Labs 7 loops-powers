@@ -1,0 +1,144 @@
+	.data
+output: .asciiz "Output"
+str: .asciiz "Program Description: \t Output\n"
+str1: .asciiz "Author: \t Luis Rodriguez\n"
+str2: .asciiz "Creation Date: \t"
+str3: .asciiz "Last Name\tFirst Name\tPosition\tSalary\n"
+slash: .asciiz "/"
+
+prompt: .asciiz "Please input a base number between 0 - 12: "
+prompty: .asciiz "Please input exponent value between 0 - 12: "
+tab: .asciiz "\n"
+result: .asciiz "Your total result is: "
+error: .asciiz "Number is less than 0. Please reinput " 
+error2: .asciiz "Number is greater than 12. Please reinput: "
+lessy: .asciiz "Number is less than 0. please reinput "
+greateryd: .asciiz "Number is greater 12. Please reinput: "
+zero: .asciiz "Exponent is 0 total value is 1."
+endresult: .asciiz "This is your total result: "
+
+
+	.text
+li $v0,4 #load system call (print string) into $v0
+la $a0,str #load adress of string str
+syscall #print string 
+
+li $v0,4 
+la $a0,str1 #load address of str1 into $a0
+syscall #print string
+
+li $v0,4
+la $a0,str2
+syscall
+
+li $v0,1 #load system call 1 (print) into $v0
+li $a0,9 #load integer 9 into $a0
+syscall
+
+li $v0,4
+la $a0,slash # load address of slash 
+syscall # print slash
+
+li $v0,1 #load system call 1 (print integer) into $v0
+li $a0,13 #load integer 9 into $a0
+syscall
+
+li $v0,4 #load system call 4 string
+la $a0,slash # load slash into $a0
+syscall #print slash 
+
+li $v0,1
+li $a0,2022 # load integer 2022 into $a0
+syscall # print integer
+
+li $v0,4
+la $a0,tab
+syscall #tab into next lime
+
+li $v0,4
+la $a0,prompt #printing prompt for y input
+syscall
+
+
+#prompt ends here 
+
+enterx: 
+li $v0, 5
+syscall
+
+addi $s1,$v0,0 # moving input to $s1
+
+blt $s1,0,errorlessx
+
+bgt $s1,12,greaterthanx
+
+entery:
+li $v0,4
+la $a0,prompty #printing prompt
+syscall
+
+li $v0,5 #getting users input
+syscall
+
+addi $s2,$v0,0 # moving y to $s2
+
+blt $s2,0,errorlessy #checking if y is less than 0
+bgt $s2,12,greatery #checking if y is greater than 12
+beq $s2,0,zeroexponent #checking if y is 0
+
+
+li $s3,1 # loading 1 to register s3
+
+loop:
+beq $s2,$0,display #branching if exponent is 0
+
+mult $s3,$s1
+mflo $s3 #total value
+sub $s2,$s2,1 #subtracting one from the exponent
+j loop
+
+
+display:
+li $v0,4
+la $a0,endresult # displaying end result
+syscall
+
+li $v0, 1
+addi $a0,$s3,0
+syscall
+
+li $v0,10 # end program
+syscall
+
+
+
+
+
+errorlessx: 
+li $v0, 4
+la $a0, error # print error if number is less than 0
+syscall
+j enterx
+
+greaterthanx: 
+li $v0,4
+la $a0, error2 # printing error if number is greater than x
+syscall
+j enterx
+
+errorlessy:
+li $v0,4
+la $a0,lessy #print error if number is less than 0
+syscall
+j entery
+
+greatery:
+li $v0,4
+la $a0,greateryd # printing error if number is greater than 12
+syscall
+j entery
+
+zeroexponent:
+li $v0,4
+la $a0,zero # printing error if exponent is zero
+syscall

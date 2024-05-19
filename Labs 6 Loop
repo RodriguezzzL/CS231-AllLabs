@@ -1,0 +1,123 @@
+	.data
+output: .asciiz "Output"
+str: .asciiz "Program Description: \t Output\n"
+str1: .asciiz "Author: \t Luis Rodriguez\n"
+str2: .asciiz "Creation Date: \t"
+str3: .asciiz "Last Name\tFirst Name\tPosition\tSalary\n"
+slash: .asciiz "/"
+remain: .asciiz " remainder"
+prompt: .asciiz "Please input how many numbers you'd like to input \n"
+tab: .asciiz "\n"
+result: .asciiz "Your total result is: "
+error: .asciiz "Number is not within the range. \n" 
+error2: .asciiz "is not divisible by 6. Enter another number: "
+isdiv: .asciiz "This number is divisible by 6."
+enternum: .asciiz "Enter a number: "
+
+	.text
+li $v0,4 #load system call (print string) into $v0
+la $a0,str #load adress of string str
+syscall #print string 
+
+li $v0,4 
+la $a0,str1 #load address of str1 into $a0
+syscall #print string
+
+li $v0,4
+la $a0,str2
+syscall
+
+li $v0,1 #load system call 1 (print) into $v0
+li $a0,9 #load integer 9 into $a0
+syscall
+
+li $v0,4
+la $a0,slash # load address of slash 
+syscall # print slash
+
+li $v0,1 #load system call 1 (print integer) into $v0
+li $a0,13 #load integer 9 into $a0
+syscall
+
+li $v0,4 #load system call 4 string
+la $a0,slash # load slash into $a0
+syscall #print slash 
+
+li $v0,1
+li $a0,2022 # load integer 2022 into $a0
+syscall # print integer
+
+li $v0,4
+la $a0,tab
+syscall #tab into next lime
+
+li $v0,4
+la $a0,prompt #printing prompt
+syscall
+
+#prompt ends here 
+li $t4,1 # loading integer 1 to $t4
+li $t5,100 # loading integer 100 t0 $100
+
+
+li $v0, 5 #user input
+syscall
+
+addi $s0,$v0,0 #moving to reg $s0
+li $s1,6 #loading value of 6
+
+
+li $v0,4
+la $a0,enternum
+syscall
+
+loop: beq $s0,$0,next
+
+li $v0,5 #getting user input
+syscall
+addi $t0,$v0,0 #transfering v0 to t0
+
+blt $t0,$t4 over_error #checking if less than 1
+
+bgt $t0,$t5 over_error #checking if greater than 100
+
+
+div $t0,$s1 #dividing by 6
+
+mfhi $t1
+
+bne $t1,$0,div_error #checkint to see if divisible by 6
+
+li $v0,4
+la $a0,isdiv
+syscall
+
+
+add $s2,$s2,$t0 #adding results
+addi $s0,$s0,-1 #subtracting 1 from s0
+j loop
+
+
+next: 
+li $v0,4
+la $a0,result #prints result string
+syscall
+
+li $v0,1
+addi $a0,$s2,0 #printing total result
+syscall
+
+li $v0,10 # end program
+syscall
+
+over_error: li $v0,4
+la $a0,error # print error message for out of range numbers
+syscall
+j loop
+
+div_error: 
+li $v0,4
+la $a0,error2 # prints error for div error
+syscall
+j loop 
+

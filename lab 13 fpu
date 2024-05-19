@@ -1,0 +1,86 @@
+.data 
+num1: .float 5.0
+num2: .float 9.0
+num3: .float 32.0
+prompt: .asciiz "Enter C to conver to F: " 
+output: .asciiz "This is your celcius to farenheit: " 
+
+
+str: .asciiz "Program Description: \t Output\n"
+str1: .asciiz "Author: \t Luis Rodriguez\n"
+str2: .asciiz "Creation Date: \t"
+str3: .asciiz "Last Name\tFirst Name\tPosition\tSalary\n"
+slash: .asciiz "/"
+tab: .asciiz "\n"
+.text 
+
+
+li $v0,4 #load system call (print string) into $v0
+la $a0,str #load adress of string str
+syscall #print string 
+
+li $v0,4 #loading 4 to v0 to print string
+la $a0,str1 #load address of str1 into $a0
+syscall #print string
+
+li $v0,4 # loading 4 to v0 to print str
+la $a0,str2 #loading address of str 2 to print
+syscall #syscall to print string
+
+li $v0,1 #load system call 1 (print) into $v0
+li $a0,10 #load integer 9 into $a0
+syscall #running syscall to print integer
+
+li $v0,4 #loading 4 to v0 to print string
+la $a0,slash # load address of slash 
+syscall # print slash
+
+li $v0,1 #load system call 1 (print integer) into $v0
+li $a0,18 #load integer 9 into $a0
+syscall#syscall to print integer
+
+li $v0,4 #load system call 4 string
+la $a0,slash # load slash into $a0
+syscall #print slash 
+
+li $v0,1
+li $a0,2022 # load integer 2022 into $a0
+syscall # print integer
+
+li $v0,4 #loading 4 to v0 to print string
+la $a0,tab #loading tab 
+syscall #tab into next lime
+
+li $v0,4 #loading 4 to v0 to print string
+la $a0,prompt #printing prompt
+syscall #running syscall to print string
+
+
+#################################################
+
+li $v0,5 #getting user input
+syscall #syscall to get user inputs
+
+add $s0,$v0,$0 # moving v0 to s0
+
+mtc1 $s0,$f0 #moving to coproccesor f0
+
+cvt.s.w $f0,$f0 #converting to single
+
+l.s $f2,num1 #loading 5 into $f2
+l.s $f4,num2 #loading 9 into f4
+l.s $f6,num3 #loading 32 into f6
+
+div.s $f1,$f4,$f2 #dividing 9/5
+
+mul.s $f0,$f0,$f1 #multiplying user input by 9/5
+
+add.s $f0,$f0,$f6 #adding 32 to our parenthese answer
+
+li $v0,2 #loading 2 to v0 to print float
+mov.s $f12,$f0 #moving to f12 to print result 
+syscall # syscall to print float
+
+
+li $v0,10 # end program
+syscall #syscall to end program

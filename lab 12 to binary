@@ -1,0 +1,116 @@
+.data
+prompt: .asciiz "Enter a integer to convert: "
+enter: .asciiz "Enter a number: "
+nextline: .asciiz "\n"
+
+.text
+
+
+li $v0,4
+la $a0,prompt #printing prompt
+syscall
+
+input:
+li $v0,5 #getting user input
+syscall
+
+add $s0,$v0,0 #moving v0 to t1 #T1 TO S3 COUNTER
+add $s1,$s0,0 #second counter
+
+add $a0,$s0,$0 #moving integer to a0 parameter
+add $a1,$s1,$0 #moving second counter to a1
+jal tostack #jump to function load array
+
+
+li $v0,10 # end program
+syscall
+
+
+tostack:
+add $t0,$a0,$0 #moving integer value to t0 COUNTER
+
+#add $t9,$a0,$0 #moving second counter
+
+addi $t7,$t7,2 #add value of 2 to t7 to divide
+
+sub $sp,$sp,4 #removing 4bytes from stack
+
+sw $ra,0($sp) #storing $ra onto stack
+
+loadstack: #lable to start loading of stack
+
+beq $t0,$0,donediv #checking if integer is greater than 0 if not jump to lable 
+
+addi $t1,$t1,1 #counter for how many loops to print 0
+
+div $t0,$t7 #div by 2 
+
+mfhi $t2 #moving remainder to #t2
+
+sub $sp,$sp,4 #moving one element in stack
+
+sw $t2,0($sp) #storing remainder into stack
+
+mflo $t0 #getting div number and rewriting to t0
+
+j loadstack
+
+
+donediv:
+
+
+li $t3,32 #loading integer $t3 with 32
+sub $t3,$t3,$t1 #subtracting 32 with out counter
+printzero:
+
+beq $t3,$0,printstack #branch once 0 counter is 0
+
+#li $v0,0 #loading to print integer
+
+li $v0,1
+
+add $a0,$0,$0 #loading v0 to a0 to print
+
+syscall
+
+sub $t3,$t3,1 #subtracting 1 from t3 for printing 0
+
+j printzero
+
+printstack:
+
+
+beq $t1,0,doneprinting
+
+lw $t5,0($sp) #loading value from stack to t5
+
+addi $sp,$sp,4 #moving back down from stack
+
+
+
+sub $t1,$t1,1 # subtracting 1 from counter
+
+li $v0,1
+
+add $a0,$t5,$0 #loading t5 to a0 to print
+
+syscall
+
+
+j printstack
+
+doneprinting:
+
+lw $ra,0($sp) #loading return address back to ra
+
+jr $ra #jumping back to main
+
+
+
+
+
+
+
+
+
+

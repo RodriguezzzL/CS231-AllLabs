@@ -1,0 +1,86 @@
+	.data
+output: .asciiz "Output"
+str: .asciiz "Program Description: \t Output\n"
+str1: .asciiz "Author: \t Luis Rodriguez\n"
+str2: .asciiz "Creation Date: \t"
+str3: .asciiz "Last Name\tFirst Name\tPosition\tSalary\n"
+name: .asciiz "Smith\t\tAdam\t\tDirector\t"
+name1: .asciiz "Hadden\t\tMary\t\tDirector\t"
+name2: .asciiz "Simpson\t\tMike\t\tManager\t\t"
+slash: .asciiz "/"
+tab: .asciiz "\n"
+	.text
+li $v0,4 #load system call (print string) into $v0
+la $a0,str #load adress of string str
+syscall #print string 
+
+li $v0,4 
+la $a0,str1 #load address of str1 into $a0
+syscall #print string
+
+li $v0,4
+la $a0,str2
+syscall
+
+li $v0,1 #load system call 1 (print) into $v0
+li $a0,9 #load integer 9 into $a0
+syscall
+
+li $v0,4
+la $a0,slash # load address of slash 
+syscall # print slash
+
+li $v0,1 #load system call 1 (print integer) into $v0
+li $a0,9 #load integer 9 into $a0
+syscall
+
+li $v0,4 #load system call 4 string
+la $a0,slash # load slash into $a0
+syscall #print slash 
+
+li $v0,1
+li $a0,2022 # load integer 2022 into $a0
+syscall # print integer
+
+li $v0,4
+la $a0,tab
+syscall #tab into next lime
+
+li $v0,4
+la $a0,str3 #load str3 into $a0
+syscall # print str3
+ 
+li $v0,4
+la $a0,name
+syscall
+
+li $v0,1
+li $a0,99010
+syscall
+
+li $v0,4
+la $a0,tab
+syscall
+
+li $v0,4
+la $a0,name1
+syscall
+
+li $v0,1
+li $a0,95220
+syscall
+
+li $v0,4
+la $a0,tab
+syscall
+
+li $v0,4
+la $a0,name2
+syscall
+
+li $v0,1
+li $a0,80000
+syscall
+
+li $v0,10
+syscall

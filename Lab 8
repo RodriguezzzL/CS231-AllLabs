@@ -1,0 +1,101 @@
+.data
+myArray: .word 0,0,0,0,0,0,0,0,0,0
+prompt: .asciiz "Enter the number of elements: "
+errorless: .asciiz "Number is less than 0 please try again: "
+errorgreater: .asciiz "Number is greater than 10 please try again: "
+enter: .asciiz "Enter a number: "
+output: .asciiz "This is your median"
+
+nextline: .asciiz "\n"
+
+.text
+la $s2,myArray #loading myArray adress to $s2
+
+li $s0,0 #loading 0 to s0
+
+li $s1,10 #loading 10 to s1
+
+
+
+li $v0,4
+la $a0,prompt #printing prompt
+syscall
+
+input:
+li $v0,5 #getting user input
+syscall
+
+add $t1,$v0,0 #moving v0 to t1
+addi $t4,$t1,0 #second counter
+
+add $t3,$t1,0
+blt $t1,$s0,lessthan #branch less than if less than 0
+
+bgt $t1,$s1,greater #branch greater than if greater than 10
+#after 1-10
+
+inloop: 
+beq $t1,$0,next #checking loop condition if greater than 0
+
+li $v0,4
+la $a0,enter #print enter prompt
+syscall 
+
+li $v0,5 #getting users input
+syscall
+
+sw $v0,0($s2) #storting to adress of s2
+
+addi $s2,$s2,4 #moving 4 bytes
+
+addi $t1,$t1,-1 #subtracting 1 from counter
+
+j inloop
+
+next: 
+la $s0,myArray  #loading back to the top of the pointer
+li $t5,2 #loading 2 to $t5
+div $t4,$t5 #dividing by 2
+
+mflo $t3 #moving quotient to $t3
+
+li $t5,4
+mult $t3,$t5 #multiplying by 4 to get to the element
+mflo $t5
+add $s0,$s0,$t5 #adding to move the element to the median
+
+lw $t0,0($s0) #loading first median to t0
+
+mfhi $t3 #moving remainder
+
+bgt $t3,$0,outputD #moving to output if odd
+
+addi $s0,$s0,-4 #moving back 1 element
+lw $t1,0($s0)
+
+add $t0,$t0,$t1
+div $t0,$t5
+j outputD 
+
+outputD:
+li $v0,4
+la,$a0,output #display end prompt
+addi $a1,$t0,0 #loading value into argument 
+j end
+syscall
+
+end: 
+li $v0,10
+syscall
+
+lessthan: #label if less than 0
+li $v0,4
+la $a0,errorless # printing error for less than 0
+syscall
+j input
+
+greater: #label if greater than 10
+li $v0,4
+la $a0,errorgreater # print error for greater than 10
+syscall
+j input

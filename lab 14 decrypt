@@ -1,0 +1,78 @@
+.data 
+string1: .asciiz "Enter string "
+space: .asciiz "\n"
+input: .byte '_','_','_','_','_','_','_','_','_','\0'
+copy: .byte '_','_','_','_','_','_','_','_','_','\0'
+output: .byte '_','_','_','_','_','_','_','_','_','\0'
+
+.text
+
+li $v0, 4 #loading 4 to v0
+la $a0,string1 #loading string to a0
+syscall # calling syscall
+
+li $v0,8 #loading 8 to get input
+li $a1,10 #amount of char
+la $a0,input #loading address of input
+syscall # calling syscall
+
+la $s0,input # loading address of input
+la $s1,copy # address of copy array
+li $s2,10 #counter
+la $s3,output #decrypted array
+li $t1,10 #key for xord
+
+
+copyloop: 
+beq $s2,$0,decrypted #branch if counter = to 0
+lb $t0,0($s0) #load to t0
+xor $t0,$t0,$t1 #xor to 10
+sb $t0,0($s1) #store to s1 
+addi $s0,$s0,1 #adding one to move to next element
+addi $s1,$s1,1 #adding one to move to next elemtent
+sub $s2,$s2,1 #subtracting 1 from counter
+li $t0,0 #reseting t0
+j copyloop
+
+decrypted:
+la $s0,input # loading address of input
+la $s1,copy # address of copy array
+li $s2,10 #counter
+li $t1,10 #key for xor
+
+decryptedloop:
+beq $s2,$0,display #brand if counter is 0
+lb $t0,0($s1) #loading from s1 to t0
+xor $t0,$t0,$t1 #decrypting to t0
+sb $t0,0($s3) #storint to copy array
+addi $s1,$s1,1 #adding one to next element
+addi $s3,$s3,1 #adding one to next element
+sub $s2,$s2,1 #sub 1 from counter
+li $t0,0 #reseting t0 to reuse
+j decryptedloop
+
+display:
+
+li $v0,4 #loading 4 to v0
+la $a0,input #output for input
+syscall
+
+li $v0,4 #loading 4 to v0
+la $a0,space #space 
+syscall
+
+li $v0,4 #loading 4 to v0
+la $a0,copy #loading copy to a0
+syscall
+
+li $v0,4 #loading 4 to v0
+la $a0,space #loading to add space
+syscall
+
+
+li $v0,4 #loading 4 to v0
+la $a0,output #loading output to a0 to print
+syscall #calling system call
+li $v0,10 #end program
+syscall
+

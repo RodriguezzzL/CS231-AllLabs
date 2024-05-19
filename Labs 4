@@ -1,0 +1,112 @@
+	.data
+output: .asciiz "Output"
+str: .asciiz "Program Description: \t Output\n"
+str1: .asciiz "Author: \t Luis Rodriguez\n"
+str2: .asciiz "Creation Date: \t"
+str3: .asciiz "Last Name\tFirst Name\tPosition\tSalary\n"
+name: .asciiz "Smith\t\tAdam\t\tDirector\t"
+name1: .asciiz "Hadden\t\tMary\t\tDirector\t"
+name2: .asciiz "Simpson\t\tMike\t\tManager\t\t"
+slash: .asciiz "/"
+Div: .asciiz " Division result"
+mult: .asciiz " Multiplication result"
+remain: .asciiz " remainder"
+sum: .asciiz "Sum: \t"
+dif: .asciiz "\nDifference is: \t"
+prompt: .asciiz "Please input two numbers to div/mult \n"
+tab: .asciiz "\n"
+	.text
+li $v0,4 #load system call (print string) into $v0
+la $a0,str #load adress of string str
+syscall #print string 
+
+li $v0,4 
+la $a0,str1 #load address of str1 into $a0
+syscall #print string
+
+li $v0,4
+la $a0,str2
+syscall
+
+li $v0,1 #load system call 1 (print) into $v0
+li $a0,9 #load integer 9 into $a0
+syscall
+
+li $v0,4
+la $a0,slash # load address of slash 
+syscall # print slash
+
+li $v0,1 #load system call 1 (print integer) into $v0
+li $a0,13 #load integer 9 into $a0
+syscall
+
+li $v0,4 #load system call 4 string
+la $a0,slash # load slash into $a0
+syscall #print slash 
+
+li $v0,1
+li $a0,2022 # load integer 2022 into $a0
+syscall # print integer
+
+li $v0,4
+la $a0,tab
+syscall #tab into next lime
+
+li $v0,4
+la $a0,prompt #printing prompt
+syscall
+
+li $v0,5
+syscall #getting first user input
+addi $s0,$v0,0 #moving input to $s0
+
+li $v0,5 #second user input
+syscall
+
+
+addi $s1,$v0,0 # moving div to $s1
+div $s0,$s1 #dividing
+mflo $t1 #moving from lo to $t1
+mfhi $t2 #remainder 
+
+
+li $v0,1
+add $a0,$t1,$0 #printing result for div
+syscall
+
+li $v0,4
+la $a0,Div #printing division result
+syscall
+
+li $v0,4
+la $a0,tab
+syscall
+
+li $v0,1
+add $a0,$t2,0
+syscall
+
+li $v0,4
+la $a0,remain #printing prompt
+syscall
+
+
+li $v0,4
+la $a0,tab
+syscall
+
+mult $s0,$s1 #multiplying
+mflo $t3 #moving to t2
+
+li $v0,1
+add $a0,$t3,$0 # printing the mult result
+syscall
+
+li $v0,4
+la $a0,mult #printing prompt
+syscall
+
+
+
+li $v0,10 # end program
+syscall
